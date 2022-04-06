@@ -1,11 +1,13 @@
 #include "stpch.h"
 #include "Collider.hpp"
 
-Collider::Collider(uint32_t count) 
+constexpr sf::Color ColliderColor(255, 255, 255);
+
+Collider::Collider(uint32_t count)
 	: m_verticesCount(count)
 	, m_vertices(nullptr)
 	, m_position(0.0f, 0.0f)
-	, m_origin	(0.0f, 0.0f)
+	, m_origin(0.0f, 0.0f)
 	, m_rotation(sf::degrees(0.0f))
 {
 	if (!count)
@@ -68,7 +70,7 @@ sf::Angle Collider::GetRotation() const {
 	return m_rotation;
 }
 
-BoxCollider::BoxCollider() 
+BoxCollider::BoxCollider()
 	: Collider(4)
 {
 
@@ -83,25 +85,25 @@ void BoxCollider::Create(sf::Vector2f size) {
 
 	sf::Vector2f pos = m_position - m_origin;
 
-	v[0] = pos + sf::Vector2f(0.0f,   0.0f	);
-	v[1] = pos + sf::Vector2f(size.x, 0.0f	);
+	v[0] = pos + sf::Vector2f(0.0f, 0.0f);
+	v[1] = pos + sf::Vector2f(size.x, 0.0f);
 	v[2] = pos + sf::Vector2f(size.x, size.y);
-	v[3] = pos + sf::Vector2f(0.0f,   size.y);
+	v[3] = pos + sf::Vector2f(0.0f, size.y);
 }
 
 void BoxCollider::draw(sf::RenderTarget& target, const sf::RenderStates& states) const {
 	static sf::Vertex v[6];
 
-	for(int i = 0; i < 4; i++)
-		v[i] = m_vertices[i];
+	for (int i = 0; i < 4; i++)
+		v[i] = sf::Vertex(m_vertices[i], ColliderColor);
 
-	v[4] = m_vertices[0];
-	v[5] = m_vertices[2];
+	v[4] = sf::Vertex(m_vertices[0], ColliderColor);
+	v[5] = sf::Vertex(m_vertices[2], ColliderColor);
 
 	target.draw(v, 6, sf::LineStrip);
 }
 
-CircleCollider::CircleCollider() 
+CircleCollider::CircleCollider()
 	: Collider(1)
 {
 
@@ -133,13 +135,13 @@ void CircleCollider::draw(sf::RenderTarget& target, const sf::RenderStates& stat
 	static sf::Vertex v[points + 1];
 
 	for (uint32_t i = 0; i <= points; i++)
-		v[i] = ::Rotate(p, m_position, angle * (float)i);
+		v[i] = sf::Vertex(::Rotate(p, m_position, angle * (float)i), ColliderColor);
 
 	target.draw(v, points + 1, sf::LineStrip);
-	target.draw(&sf::Vertex(m_position), 1, sf::Points);
+	target.draw(&sf::Vertex(m_position, ColliderColor), 1, sf::Points);
 }
 
-CustomCollider::CustomCollider() 
+CustomCollider::CustomCollider()
 	: Collider(0)
 {
 
@@ -181,9 +183,9 @@ void CustomCollider::draw(sf::RenderTarget& target, const sf::RenderStates& stat
 	sf::Vertex* v = new sf::Vertex[count];
 
 	for (uint32_t i = 0; i < count - 1; i++)
-		v[i] = m_vertices[i];
+		v[i] = sf::Vertex(m_vertices[i], ColliderColor);
 
-	v[count - 1] = m_vertices[0];
+	v[count - 1] = sf::Vertex(m_vertices[0], ColliderColor);
 
 	target.draw(v, count, sf::LineStrip);
 

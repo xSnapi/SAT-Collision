@@ -20,8 +20,9 @@ public:
 	sf::Event		 Event;
 
 private:
-	//BoxCollider m_boxCollider;
+	BoxCollider m_boxCollider;
 	BoxCollider m_boxCollider2;
+	BoxCollider m_boxCollider3;
 	CircleCollider m_circleCollider;
 	//CircleCollider m_circleCollider2;
 

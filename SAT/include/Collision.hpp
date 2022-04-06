@@ -9,8 +9,10 @@ public:
 	static Collision Instance;
 
 	bool SATCollision(const Collider& body, const Collider& other, sf::Vector2f& MTV);
+
 	bool SATCollision(const CircleCollider& body, const Collider& other, sf::Vector2f& MTV);
 	bool SATCollision(const Collider& body, const CircleCollider& other, sf::Vector2f& MTV);
+
 	bool SATCollision(const CircleCollider& body, const CircleCollider& other, sf::Vector2f& MTV);
 
 private:
@@ -26,5 +28,5 @@ private:
 
 	sf::Vector2f GetCenter(const Collider& body) const;
 
-	float		 Overlap(sf::Vector2f v0, sf::Vector2f v1) const;
+	float Overlap(sf::Vector2f v0, sf::Vector2f v1) const;
 };

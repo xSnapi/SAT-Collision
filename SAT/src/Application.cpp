@@ -10,18 +10,23 @@ Application::Application() {
 	InitWindow();
 	m_circleCollider.Create(100.0f);
 
-	//m_boxCollider.Create(sf::Vector2f(100.0f, 100.0f));
-	//m_boxCollider.SetPosition(sf::Vector2f(400.0f, 400.0f));
-	//m_boxCollider.SetOrigin(sf::Vector2f(50.0f, 50.0f));
-	//m_boxCollider.SetRotation(sf::degrees(45.0f));
+	m_boxCollider.Create(sf::Vector2f(100.0f, 100.0f));
+	m_boxCollider.SetPosition(sf::Vector2f(400.0f, 400.0f));
+	m_boxCollider.SetOrigin(sf::Vector2f(50.0f, 50.0f));
+	m_boxCollider.SetRotation(sf::degrees(45.0f));
 
-	m_circleCollider.SetPosition(sf::Vector2f(100.0f, 100.0f));
+	m_circleCollider.SetPosition(sf::Vector2f(250.0f, 300.0f));
 	//m_circleCollider.SetOrigin(sf::Vector2f(20.0f, 20.0f));
 
 	m_boxCollider2.Create(sf::Vector2f(200.0f, 200.0f));
-	m_boxCollider2.SetPosition(sf::Vector2f(600.0f, 400.0f));
+	m_boxCollider2.SetPosition(sf::Vector2f(850.0f, 400.0f));
 	m_boxCollider2.SetOrigin(sf::Vector2f(50.0f, 50.0f));
-	//m_boxCollider2.SetRotation(sf::degrees(5.0f));
+	m_boxCollider2.SetRotation(sf::degrees(15.0f));
+
+	m_boxCollider3.Create(sf::Vector2f(200.0f, 200.0f));
+	m_boxCollider3.SetPosition(sf::Vector2f(550.0f, 400.0f));
+	m_boxCollider3.SetOrigin(sf::Vector2f(50.0f, 50.0f));
+	m_boxCollider3.SetRotation(sf::degrees(25.0f));
 
 	/*m_circleCollider2.Create(100.0f);
 	m_circleCollider2.SetPosition(sf::Vector2f(400.0f, 500.0f));
@@ -35,7 +40,7 @@ Application::Application() {
 	c[4] = sf::Vector2f(80.0f,  120.0f);
 	c[5] = sf::Vector2f(0.0f,   50.0f);
 
-	c.SetPosition(sf::Vector2f(400.0f, 400.0f));
+	c.SetPosition(sf::Vector2f(470.0f, 100.0f));
 	/*
 	c2.Create(6);
 
@@ -76,16 +81,24 @@ void Application::Update() {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		m_boxCollider2.Rotate(sf::degrees(100.0f * dt));
 
-	m_circleCollider.SetPosition(mousePos);
+	m_boxCollider.SetPosition(mousePos);
+
+	sf::Vector2f sum;
 
 	sf::Vector2f MTV;
-	if (Collision::Instance.SATCollision(m_circleCollider, c, MTV))
-		m_circleCollider.Move(MTV);
-		//m_circleCollider.Move(MTV);
+	if (Collision::Instance.SATCollision(m_boxCollider, m_boxCollider2, MTV))
+		m_boxCollider.Move(MTV);
+	if (Collision::Instance.SATCollision(m_boxCollider, m_boxCollider3, MTV))
+		m_boxCollider.Move(MTV);
+
+
+	//m_circleCollider.Move(sum);
 }
 
 void Application::Render() {
-	//Window.draw(m_boxCollider2);
+	Window.draw(m_boxCollider2);
+	Window.draw(m_boxCollider3);
+	Window.draw(m_boxCollider);
 	Window.draw(m_circleCollider);
 	//Window.draw(m_circleCollider2);
 	Window.draw(c);

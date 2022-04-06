@@ -1,45 +1,48 @@
 #include "stpch.h"
 #include "Collision.hpp"
 
+#pragma warning(disable : 6386)
+
 Collision Collision::Instance;
 
 bool Collision::SATCollision(const Collider& body, const Collider& other, sf::Vector2f& MTV) {
 	float minOverlap = INF;
 
-	auto& bodyV  = body.m_vertices;
-	auto& otherV = other.m_vertices;
+	sf::Vector2f* bodyVertices  = body.m_vertices;
+	sf::Vector2f* otherVertices = other.m_vertices;
 
-	const uint32_t countB = body.m_verticesCount;
-	const uint32_t countO = other.m_verticesCount;
+	uint32_t bodyCount  = body.m_verticesCount;
+	uint32_t otherCount = other.m_verticesCount;
 
-	const uint32_t all = countB + countO;
+	uint32_t all = bodyCount + otherCount;
 
 	sf::Vector2f* axis = new sf::Vector2f[all];
 
-	for (uint32_t i = 0; i < countB; i++)
-		axis[i] = PerpendicularAxis(bodyV, i, countB);
+	for (uint32_t i = 0; i < bodyCount; i++)
+		axis[i] = PerpendicularAxis(bodyVertices, i, bodyCount);
 
-	for (uint32_t i = countB; i < all; i++)
-		axis[i] = PerpendicularAxis(otherV, i - countB, countO);
+	for (uint32_t i = 0; i < otherCount; i++)
+		axis[i + bodyCount] = PerpendicularAxis(otherVertices, i, otherCount);
 
 	for (uint32_t i = 0; i < all; i++) {
 		auto& a = axis[i];
 
-		sf::Vector2f bodyProjection  = ProjectOnto(bodyV, countB, a);
-		sf::Vector2f otherProjection = ProjectOnto(otherV, countO, a);
+		sf::Vector2f bodyProjection	 = ProjectOnto(bodyVertices, bodyCount, a);
+		sf::Vector2f otherProjection = ProjectOnto(otherVertices, otherCount, a);
 
 		float overlap = Overlap(bodyProjection, otherProjection);
 
-		if (overlap == 0.0f) {
-			delete[] axis;
-
+		if (!overlap) {
 			MTV = sf::Vector2f(0.0f, 0.0f);
+			
+			delete[] axis;
 
 			return false;
 		}
 		else {
 			if (overlap < minOverlap) {
 				minOverlap = overlap;
+
 				MTV = a * overlap;
 			}
 		}
@@ -54,45 +57,47 @@ bool Collision::SATCollision(const Collider& body, const Collider& other, sf::Ve
 
 bool Collision::SATCollision(const CircleCollider& body, const Collider& other, sf::Vector2f& MTV) {
 	float minOverlap = INF;
-
-	auto& vert = other.m_vertices;
-
-	uint32_t count = other.m_verticesCount;
-	uint32_t all   = count + 1;
-
+	
 	sf::Vector2f center = body.GetPosition();
+	float		 radius = body.GetRadius();
+
+	sf::Vector2f* vert = other.m_vertices;
+
+	uint32_t vertCount = other.m_verticesCount;
+	uint32_t all	   = vertCount + 1;
 
 	sf::Vector2f* axis = new sf::Vector2f[all];
+ 
+	for (uint32_t i = 0; i < vertCount; i++)
+		axis[i] = PerpendicularAxis(vert, i, vertCount);
 
-	for (uint32_t i = 0; i < count; i++)
-		axis[i] = PerpendicularAxis(vert, i, count);
+	axis[vertCount] = CircleAxis(vert, vertCount, center);
 
-	axis[count] = CircleAxis(vert, count, center);
-
-	for (uint32_t i = 0; i < all;  i++) {
+	for (uint32_t i = 0; i < all; i++) {
 		auto& a = axis[i];
 
-		sf::Vector2f circleProjection = ProjectCircle(center, body.GetRadius(), a);
-		sf::Vector2f otherProjection  = ProjectOnto(vert, count, a);
+		sf::Vector2f circleProjection = ProjectCircle(center, radius, a);
+		sf::Vector2f otherProjection  = ProjectOnto(vert, vertCount, a);
 
 		float overlap = Overlap(circleProjection, otherProjection);
 
-		if (overlap == 0.0f) {
-			delete[] axis;
-
+		if (!overlap) {
 			MTV = sf::Vector2f(0.0f, 0.0f);
+
+			delete[] axis;
 
 			return false;
 		}
 		else {
 			if (overlap < minOverlap) {
 				minOverlap = overlap;
+
 				MTV = a * overlap;
 			}
 		}
 	}
 
-	if (DotProduct(center - GetCenter(other), MTV) < 0.0f)
+	if (DotProduct(GetCenter(body) - GetCenter(other), MTV) < 0.0f)
 		MTV *= -1.0f;
 
 	delete[] axis;
@@ -137,7 +142,7 @@ sf::Vector2f Collision::GetCenter(const Collider& body) const {
 		auto& v0 = body.m_vertices[i];
 		auto& v1 = body.m_vertices[i + 1 != count ? i + 1 : 0];
 
-		float b = v0.x * v1.y - v1.x * v0.y;
+		float b = CrossProduct(v0, v1);
 
 		A += b;
 
@@ -239,3 +244,5 @@ Collision::Collision() {
 Collision::~Collision() {
 
 }
+
+#pragma warning(default : 6386)

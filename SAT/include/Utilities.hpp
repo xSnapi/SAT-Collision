@@ -7,6 +7,11 @@ inline float DotProduct(sf::Vector2<T> v0, sf::Vector2<T> v1) {
 	return v0.x * v1.x + v0.y * v1.y;
 }
 
+template <typename T> // Z coords of crossed vectors
+inline float CrossProduct(sf::Vector2<T> v0, sf::Vector2<T> v1) {
+	return v0.x * v1.y - v0.y * v1.x;
+}
+
 template <typename T>
 inline float Distance(sf::Vector2<T> v0, sf::Vector2<T> v1) {
 	return sqrtf((v0 - v1).x * (v0 - v1).x + (v0 - v1).y * (v0 - v1).y);
