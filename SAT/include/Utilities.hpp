@@ -42,13 +42,16 @@ static sf::Vector2<T> Rotate(sf::Vector2<T> point, sf::Vector2<T> center, sf::An
 
 template <typename T>
 inline sf::Vector2<T> VecAbs(sf::Vector2<T> v) {
-	return sf::Vector2f
+	return sf::Vector2<T>
 	{
-		v.x < 0.0f ? -v.x : v.x,
-		v.y < 0.0f ? -v.y : v.y
+		v.x < T(0) ? -v.x : v.x,
+		v.y < T(0) ? -v.y : v.y
 	};
 }
 
+inline sf::Vector2f Lerp(sf::Vector2f x, sf::Vector2f y, float t) {
+	return x * (1.0f - t) + y * t;
+}
 
 inline sf::Vector2f MousePos(const sf::RenderWindow& window = *(sf::RenderWindow*)nullptr) {
 	return !&window ? (sf::Vector2f)sf::Mouse::getPosition() : window.mapPixelToCoords(sf::Mouse::getPosition(window));

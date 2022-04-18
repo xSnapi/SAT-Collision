@@ -4,6 +4,8 @@
 #include "SFML/Graphics/Drawable.hpp"
 #include "SFML/System/Vector2.hpp"
 
+#include <functional>
+
 class Collision;
 
 class Collider : public sf::Drawable {
@@ -22,6 +24,8 @@ public:
 	sf::Vector2f GetPosition() const;
 	sf::Vector2f GetOrigin()   const;
 	sf::Angle	 GetRotation() const;
+
+	std::function<void()> Trigger;
 
 protected:
 	sf::Vector2f  m_position;
@@ -56,8 +60,8 @@ public:
 	void Create(float radius);
 
 	float GetRadius() const;
-private:
 
+private:
 	float m_radius = 0.0f;
 
 	virtual void draw(sf::RenderTarget& target, const sf::RenderStates& states) const;
@@ -79,6 +83,5 @@ public:
 	sf::Vector2f& operator[](uint32_t index);
 
 private:
-
 	virtual void draw(sf::RenderTarget& target, const sf::RenderStates& states) const;
 };

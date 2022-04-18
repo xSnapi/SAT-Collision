@@ -5,7 +5,7 @@ project "SAT"
    staticruntime "on"
 
    targetdir "bin/%{cfg.buildcfg}"
-   objdir("bin/Obj/%{cfg.buildcfg}")
+   objdir "bin/Obj/%{cfg.buildcfg}"
 
    pchheader "stpch.h"
    pchsource "pch/stpch.cpp"

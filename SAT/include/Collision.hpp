@@ -19,7 +19,7 @@ private:
 	Collision();
 	~Collision();
 
-	sf::Vector2f CircleAxis(sf::Vector2f* vertices, uint32_t count, sf::Vector2f circleCenter);
+	sf::Vector2f CircleAxis(sf::Vector2f* vertices, uint32_t count, sf::Vector2f center);
 
 	sf::Vector2f PerpendicularAxis(sf::Vector2f* vertices, uint32_t index, uint32_t count) const;
 

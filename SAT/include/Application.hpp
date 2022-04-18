@@ -20,16 +20,15 @@ public:
 	sf::Event		 Event;
 
 private:
-	BoxCollider m_boxCollider;
-	BoxCollider m_boxCollider2;
-	BoxCollider m_boxCollider3;
-	CircleCollider m_circleCollider;
-	//CircleCollider m_circleCollider2;
-
-	CustomCollider c;
-	//CustomCollider c2;
-
 	sf::Clock m_dtClock;
+
+	std::vector<Collider*> m_Colliders;
+
+	BoxCollider m_box;
+
+	void CreateColliders();
+	void CheckCollision();
+	void UpdateBox();
 
 	void Update();
 	void Render();

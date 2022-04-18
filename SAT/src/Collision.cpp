@@ -16,6 +16,13 @@ bool Collision::SATCollision(const Collider& body, const Collider& other, sf::Ve
 
 	uint32_t all = bodyCount + otherCount;
 
+	if (all == 2)
+		return SATCollision((const CircleCollider&)body, (const CircleCollider&)other, MTV);
+	else if (bodyCount == 1) 
+		return SATCollision((const CircleCollider&)body, other, MTV);
+	else if (otherCount == 1)
+		return SATCollision(body, (const CircleCollider&)other, MTV);
+
 	sf::Vector2f* axis = new sf::Vector2f[all];
 
 	for (uint32_t i = 0; i < bodyCount; i++)
@@ -50,6 +57,12 @@ bool Collision::SATCollision(const Collider& body, const Collider& other, sf::Ve
 
 	if (DotProduct(GetCenter(body) - GetCenter(other), MTV) < 0.0f)
 		MTV *= -1.0f;
+
+	if (body.Trigger)
+		body.Trigger();
+
+	if (other.Trigger)
+		other.Trigger();
 
 	delete[] axis;
 	return true;
@@ -97,8 +110,14 @@ bool Collision::SATCollision(const CircleCollider& body, const Collider& other, 
 		}
 	}
 
-	if (DotProduct(GetCenter(body) - GetCenter(other), MTV) < 0.0f)
+	if (DotProduct(center - GetCenter(other), MTV) < 0.0f)
 		MTV *= -1.0f;
+
+	if (body.Trigger)
+		body.Trigger();
+
+	if (other.Trigger)
+		other.Trigger();
 
 	delete[] axis;
 	return true;
@@ -125,6 +144,12 @@ bool Collision::SATCollision(const CircleCollider& body, const CircleCollider& o
 	diff = Normalize(diff);
 
 	MTV = diff * sum;
+
+	if (body.Trigger)
+		body.Trigger();
+
+	if (other.Trigger)
+		other.Trigger();
 
 	return true;
 }
@@ -154,7 +179,7 @@ sf::Vector2f Collision::GetCenter(const Collider& body) const {
 	return center;
 }
 
-sf::Vector2f Collision::CircleAxis(sf::Vector2f* vertices, uint32_t count, sf::Vector2f circleCenter) {
+sf::Vector2f Collision::CircleAxis(sf::Vector2f* vertices, uint32_t count, sf::Vector2f center) {
 	sf::Vector2f axis;
 
 	uint32_t index = 0;
@@ -163,7 +188,7 @@ sf::Vector2f Collision::CircleAxis(sf::Vector2f* vertices, uint32_t count, sf::V
 	for (uint32_t i = 0; i < count; i++) {
 		auto& v = vertices[i];
 
-		float d = Distance(v, circleCenter);
+		float d = Distance(v, center);
 
 		if (d >= dist)
 			continue;
@@ -172,7 +197,7 @@ sf::Vector2f Collision::CircleAxis(sf::Vector2f* vertices, uint32_t count, sf::V
 		index = i;
 	}
 
-	return Normalize(circleCenter - vertices[index]);
+	return Normalize(center - vertices[index]);
 }
 
 sf::Vector2f Collision::PerpendicularAxis(sf::Vector2f* vertices, uint32_t index, uint32_t count) const {

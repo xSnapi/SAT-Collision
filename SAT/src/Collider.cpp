@@ -5,10 +5,10 @@ constexpr sf::Color ColliderColor(255, 255, 255);
 
 Collider::Collider(uint32_t count)
 	: m_verticesCount(count)
-	, m_vertices(nullptr)
-	, m_position(0.0f, 0.0f)
-	, m_origin(0.0f, 0.0f)
-	, m_rotation(sf::degrees(0.0f))
+	, m_vertices	 (nullptr)
+	, m_position	 (0.0f, 0.0f)
+	, m_origin		 (0.0f, 0.0f)
+	, m_rotation	 (sf::degrees(0.0f))
 {
 	if (!count)
 		return;
@@ -59,7 +59,7 @@ void Collider::Rotate(sf::Angle angle) {
 }
 
 sf::Vector2f Collider::GetPosition() const {
-	return m_position;
+	return m_position + m_origin;
 }
 
 sf::Vector2f Collider::GetOrigin() const {
